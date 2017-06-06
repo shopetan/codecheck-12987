@@ -9,22 +9,28 @@ class DummyClient(WebSocketClient):
             for i in range(1, 200, 25):
                 yield "#" * i
 
-        self.send(data_provider())
+        #余計なものを送ると怒られるっぽいので送らない
+        #self.send(data_provider())
 
-        for i in range(0, 200, 25):
+        #同上
+        #for i in range(0, 200, 25):
           #print i
-          self.send("*" * i)
+          #self.send("*" * i)
 
-    def closed(self, code, reason=None):
-        print "Closed down", code, reason
+      #いらなそうなので削除
+      #def closed(self, code, reason=None):
+        #print "Closed down", code, reason
 
     def received_message(self, m):
         print m
         mess = str(m).split(" ")
         if mess[0] == "Hello,":
-          send_mess = "Hello, " + " ".join(mess[2:])
-          print send_mess
+          name = " ".join(mess[2:])
+          send_mess = "Hello, " + name
+          #print send_mess
           self.send(send_mess)
+        else:
+          print name + "said:" + str(m)
         if len(m) == 175:
           self.close(reason='Bye bye')
 
