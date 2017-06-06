@@ -1,12 +1,37 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-def main(argv, options):
-  # このコードは引数と標準出力を用いたサンプルコードです。
-  # このコードは好きなように編集・削除してもらって構いません。
-  # ---
-  # This is a sample code to use arguments and outputs.
-  # Edit and remove this code as you like.
+from ws4py.client.threadedclient import WebSocketClient
 
-  for i, v in enumerate(argv):
-    print("argv[{0}]: {1}".format(i, v))
+class DummyClient(WebSocketClient):
+    def opened(self):
+        def data_provider():
+            for i in range(1, 200, 25):
+                yield "#" * i
+
+        self.send(data_provider())
+
+        for i in range(0, 200, 25):
+          #print i
+          self.send("*" * i)
+
+    def closed(self, code, reason=None):
+        print "Closed down", code, reason
+
+    def received_message(self, m):
+        print m
+        mess = str(m).split(" ")
+        if mess[0] == "Hello,":
+          send_mess = "Hello, " + "".join(mess[2:])
+          print send_mess
+          self.send(send_mess)
+        if len(m) == 175:
+          self.close(reason='Bye bye')
+
+if __name__ == '__main__':
+    try:
+        ws = DummyClient('ws://challenge-server.code-check.io/api/websocket/hello', protocols=['http-only', 'chat'])
+        ws.connect()
+        ws.run_forever()
+    except KeyboardInterrupt:
+        ws.close()
