@@ -22,7 +22,7 @@ class DummyClient(WebSocketClient):
         print m
         mess = str(m).split(" ")
         if mess[0] == "Hello,":
-          send_mess = "Hello, " + "".join(mess[2:])
+          send_mess = "Hello, " + " ".join(mess[2:])
           print send_mess
           self.send(send_mess)
         if len(m) == 175:
