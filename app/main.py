@@ -22,14 +22,13 @@ class DummyClient(WebSocketClient):
         #print "Closed down", code, reason
 
     def received_message(self, m):
-        print m
         mess = str(m).split(" ")
         if mess[0] == "Hello,":
           name = " ".join(mess[2:])
           send_mess = "Hello, " + name
-          #print send_mess
           self.send(send_mess)
         else:
+          name = str(m)
           print name + "said:" + str(m)
         if len(m) == 175:
           self.close(reason='Bye bye')
